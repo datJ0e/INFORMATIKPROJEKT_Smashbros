@@ -6,27 +6,42 @@
 
 package smashbros;
 
+import java.awt.Graphics;
+
 /**
+ * Superklasse, alle Objekte im Spiel extenden diese Klasse
+ * @see Spieler
  * @author fre.riedmann
  */
 public class SpielObjekt {
     
-    private float velX, velY, posX, posY;
+    float velX, velY, posX, posY, width, height;
     private float gravity;
+    Hitbox hitbox;
     
-    public SpielObjekt(float x, float y) {
+    public SpielObjekt(float x, float y, float width, float height, boolean hasHitbox) {
         this.posX = x;
         this.posY = y;
+        this.width = width;
+        this.height = height;
+		if(hasHitbox) hitbox = new Hitbox(x, y, width, height);
     }
+    
+    
     
     /**
      * updated das spielobjekt (beschleunigungen usw)
      * @param time Zeit seit dem letzten update in millisekunden
      */
     public void update(long time) {
-        this.velY -= gravity;   //MINUS gravity, weil die koordinaten nach unten hin ja kleiner werden (sonst würde alles nach oben fallen)
+        //MINUS gravity, weil die koordinaten nach unten hin ja kleiner werden (sonst wÃ¼rde alles nach oben fallen)
+        this.velY -= gravity*(1000/time);   //1000/time damit sekunden rauskommen
         this.posX += velX;
         this.posY += velY;
+        if(hitbox!=null) {
+        	hitbox.setPosX(posX);
+			hitbox.setPosY(posY);
+        }
     }
     
     public void addVelocities(float velX, float velY) {
@@ -34,7 +49,16 @@ public class SpielObjekt {
         this.velY += velY;
     }
     
-    //Getter und Setter
+    public void draw(Graphics g) {
+        g.fillRect((int)posX, (int)posY, (int)width, (int)height);
+        if(hitbox!=null) hitbox.draw(g);
+    }
+    
+    
+    
+    /*
+    * Getter und Setter
+    */
     public void setGravity(float gravity) {
         this.gravity = gravity;
     }
