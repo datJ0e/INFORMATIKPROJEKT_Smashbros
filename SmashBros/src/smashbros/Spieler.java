@@ -7,9 +7,12 @@
 package smashbros;
 
 /**
- *
- * @author joh.warnke
+ * Spieler. Wie der Name schon sagt. Extendet SpielObjekt
+ * @see SpielObjekt
+ * @author fre.riedmann
  */
-public class Spieler {
-    
+public class Spieler extends SpielObjekt {	
+	public Spieler(float x, float y, float width, float height) {
+		super(x, y, width, height, true);
+	}
 }
