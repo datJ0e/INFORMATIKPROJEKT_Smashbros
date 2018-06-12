@@ -8,6 +8,8 @@ package smashbros;
 
 import java.awt.Graphics;
 
+import javax.swing.JFrame;
+
 /**
  * Klasse die alle Objekte usw managet
  * @author fre.riedmann
@@ -18,12 +20,16 @@ public class Spiel {
 	private Spieler spieler2;
 	private Spiel instance;
 	private boolean running;
+	private InputController ic;
 	
-	public Spiel() {
+	public Spiel(JFrame frame) {
 		spieler1 = new Spieler(0, 0, 60, 100);   //spieler bild ist ca 50 hoch & 30 breit
 		spieler2 = new Spieler(300, 0, 60, 100);
 		instance = this;
 		running = true;
+		ic = new InputController(frame);
+		ic.newControll(spieler1, 'a', 'w', 's', 'd');
+		ic.newControll(spieler2, 'j', 'i', 'k', 'l');
 	}
 	
 	/**
