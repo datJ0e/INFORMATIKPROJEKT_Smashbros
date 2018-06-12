@@ -6,7 +6,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 
 /**
- * Klasse die dafür sorgt dass die Spieler sich bewegen wenn eine Taste gedrückt wird
+ * Klasse die dafÃ¼r sorgt dass die Spieler sich bewegen wenn eine Taste gedrÃ¼ckt wird
  * @author fre.riedmann
  *
  */
@@ -20,18 +20,18 @@ public class InputController {
 		this.frame = frame;
 	}
 	
-	public void newControll(final Spieler spieler,final char leftKey,final char upKey,final char downKey,final char rightKey) {
+	public void newControll(Spieler spieler, int leftKey, int upKey, int downKey, int rightKey) {
 		frame.addKeyListener(new KeyListener() {
 			
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				
+				System.out.println("typed key code: " + (int)e.getKeyChar());
 			}
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				char keyCode = e.getKeyChar();
+				int keyCode = (int)e.getKeyChar();
 				if(keyCode == leftKey) spieler.setMovingLeft(false);
 				if(keyCode == upKey) spieler.setMovingUp(false);
 //				if(keyCode == downKey) spieler.setMovingLeft(true);
@@ -40,7 +40,7 @@ public class InputController {
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
-				char keyCode = e.getKeyChar();
+				int keyCode = (int)e.getKeyChar();
 				if(keyCode == leftKey) spieler.setMovingLeft(true);
 				if(keyCode == upKey) spieler.setMovingUp(true);
 //				if(keyCode == downKey) spieler.setMovingLeft(true);
