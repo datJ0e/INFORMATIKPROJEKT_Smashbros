@@ -6,6 +6,8 @@
 
 package smashbros;
 
+import java.awt.Graphics;
+
 /**
  * Klasse die alle Objekte usw managet
  * @author fre.riedmann
@@ -24,6 +26,9 @@ public class Spiel {
 		running = true;
 	}
 	
+	/**
+	 * Startet das Spiel
+	 */
 	public void start() {
 		running = true;
 		updater.run();
@@ -38,6 +43,18 @@ public class Spiel {
 		spieler2.update(time);
 	}
 	
+	/**
+	 * Zeichnet alle Objekte des Spiels
+	 * @param g Graphics Objekt mit dem alles gezeichnet wird
+	 */
+	public void draw(Graphics g) {
+		spieler1.draw(g);
+		spieler2.draw(g);
+	}
+	
+	/**
+	 * Runnable die alles genau 60 mal pro Sekunde berechnet
+	 */
 	Runnable updater = new Runnable() {
 		@Override
 		public void run() {
