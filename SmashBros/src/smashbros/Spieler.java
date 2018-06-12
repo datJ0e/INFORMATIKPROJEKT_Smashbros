@@ -23,8 +23,8 @@ public class Spieler extends SpielObjekt {
 	public void update(long time) {
 		super.update(time);
 		if(isMovingUp()) jump();
-		if(isMovingLeft()) posX -= 10;
-		if(isMovingRight()) posX += 10;
+		if(isMovingLeft()) posX -= 1;
+		if(isMovingRight()) posX += 1;
 //		if(isMovingDown) 
 	}
 	
@@ -38,6 +38,7 @@ public class Spieler extends SpielObjekt {
 	}
 
 	public void setMovingLeft(boolean isMovingLeft) {
+		System.out.println("Spieler is moving left: " + isMovingLeft);
 		this.isMovingLeft = isMovingLeft;
 	}
 
@@ -46,6 +47,7 @@ public class Spieler extends SpielObjekt {
 	}
 
 	public void setMovingUp(boolean isMovingUp) {
+		System.out.println("Spieler is moving up: " + isMovingUp);
 		this.isMovingUp = isMovingUp;
 	}
 
@@ -54,6 +56,7 @@ public class Spieler extends SpielObjekt {
 	}
 
 	public void setMovingRight(boolean isMovingRight) {
+		System.out.println("Spieler is moving right: " + isMovingRight);
 		this.isMovingRight = isMovingRight;
 	}
 }
