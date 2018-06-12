@@ -34,7 +34,8 @@ public class SpielObjekt {
      * @param time Zeit seit dem letzten update in millisekunden
      */
     public void update(long time) {
-        //MINUS gravity, weil die koordinaten nach unten hin ja kleiner werden (sonst wÃ¼rde alles nach oben fallen)
+    	if(time<=0) return;
+        //MINUS gravity, weil die koordinaten nach unten hin ja kleiner werden (sonst wÃƒÂ¼rde alles nach oben fallen)
         this.velY -= gravity*(1000/time);   //1000/time damit sekunden rauskommen
         this.posX += velX;
         this.posY += velY;
