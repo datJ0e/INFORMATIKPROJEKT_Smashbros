@@ -20,7 +20,7 @@ public class InputController {
 		this.frame = frame;
 	}
 	
-	public void newControll(Spieler spieler, char leftKey, char upKey, char downKey, char rightKey) {
+	public void newControll(final Spieler spieler,final char leftKey,final char upKey,final char downKey,final char rightKey) {
 		frame.addKeyListener(new KeyListener() {
 			
 			@Override
