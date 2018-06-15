@@ -18,6 +18,7 @@ public class Spiel {
 	
 	private Spieler spieler1;
 	private Spieler spieler2;
+	private Boden boden;
 	private Spiel instance;
 	private boolean running;
 	private InputController ic;
@@ -25,11 +26,12 @@ public class Spiel {
 	public Spiel(JFrame frame) {
 		spieler1 = new Spieler(0, 0, 60, 100);   //spieler bild ist ca 50 hoch & 30 breit
 		spieler2 = new Spieler(300, 0, 60, 100);
+		boden = new Boden(this, 50, 300, 400);
 		instance = this;
 		running = true;
 		ic = new InputController(frame);
-		ic.newControll(spieler1, 'a', 'w', 's', 'd');
-		ic.newControll(spieler2, 'j', 'i', 'k', 'l');
+		ic.newControll(spieler1, 97, 119, 115, 100);
+		ic.newControll(spieler2, 106, 105, 107,108);
 	}
 	
 	/**
@@ -37,7 +39,7 @@ public class Spiel {
 	 */
 	public void start() {
 		running = true;
-		updater.run();
+		updater.start();
 	}
 	
 	/**
@@ -56,15 +58,16 @@ public class Spiel {
 	public void draw(Graphics g) {
 		spieler1.draw(g);
 		spieler2.draw(g);
+		boden.draw(g);
 	}
 	
 	/**
 	 * Runnable die alles genau 60 mal pro Sekunde berechnet
 	 */
-	Runnable updater = new Runnable() {
+	Thread updater = new Thread() {
 		@Override
 		public void run() {
-			long last = System.currentTimeMillis();
+			long last = System.currentTimeMillis()-16;
 			while(running) {
 				instance.update(System.currentTimeMillis() - last);
 				last = System.currentTimeMillis();
@@ -72,5 +75,16 @@ public class Spiel {
 			}
 		}
 	};
+	
+	
+	
+	
+	
+	public Spieler[] getSpieler() {
+		Spieler[] s = new Spieler[2];
+		s[0] = spieler1;
+		s[1] = spieler2;
+		return s;
+	}
     
 }
