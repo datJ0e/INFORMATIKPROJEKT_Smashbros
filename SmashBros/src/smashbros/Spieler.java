@@ -6,6 +6,8 @@
 
 package smashbros;
 
+import java.awt.Graphics;
+
 /**
  * Spieler. Wie der Name schon sagt. Extendet SpielObjekt
  * @see SpielObjekt
@@ -14,9 +16,11 @@ package smashbros;
 public class Spieler extends SpielObjekt {
 	
 	private boolean isMovingLeft, isMovingUp, isMovingDown, isMovingRight;
+	private boolean aufBoden;
 	
 	public Spieler(float x, float y, float width, float height) {
 		super(x, y, width, height, true);
+		super.setGravity(1.5f);
 	}
 	
 	@Override 
@@ -28,8 +32,14 @@ public class Spieler extends SpielObjekt {
 //		if(isMovingDown) 
 	}
 	
+	@Override
+    public void draw(Graphics g) {
+        g.fillRect((int)posX, (int)posY, (int)width, (int)height);
+        if(hitbox!=null) hitbox.draw(g);
+    }
+	
 	public void jump() {
-		velY += 4;
+		velY -= 4;
 		setMovingUp(false);
 	}
 
