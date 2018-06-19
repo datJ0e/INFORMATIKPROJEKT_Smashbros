@@ -16,29 +16,32 @@ import java.awt.Graphics;
 public class Spieler extends SpielObjekt {
 	
 	private boolean isMovingLeft, isMovingUp, isMovingDown, isMovingRight;
-	private boolean aufBoden;
+	private int maxAirJumps = 2;   //wie oft man in der luft nochmal springen kann
+	private int currentAirJumps = 0;   //wie oft der spieler in der luft schon gepsrungen ist
 	private Spiel spiel;
 	
 	public Spieler(Spiel spiel, float x, float y, float width, float height) {
-		super(x, y, width, height, true);
+		super(spiel, x, y, width, height, true);
 		super.setGravity(5f);
 		this.spiel = spiel;
 	}
 	
 	@Override 
 	public void update(long time) {
-		super.update(time, aufBoden);
+		super.update(time);
 			if(isMovingUp()) jump();
-			if(isMovingLeft()) posX -= 1;
-			if(isMovingRight()) posX += 1;
+//			float relX = 0, relY = 0;
+			velX = isMovingLeft() ? -2.5f : isMovingRight() ? 2.5f : 0;
+			if(super.isAufBoden()) currentAirJumps = 0;
+//			moveRelative(relX, relY);
 //			if(isMovingDown)
 		
-		if(aufBoden && velY>0) velY = 0;
-		boolean anyIntersection = false;
-		for(Boden b : spiel.getAlleBodens()) {
-			if(this.hitbox.intersects(b.hitbox)) anyIntersection = true;
-		}
-		aufBoden = anyIntersection;
+//		if(aufBoden && velY>0) velY = 0;
+//		boolean anyIntersection = false;
+//		for(Boden b : spiel.getAlleBodens()) {
+//			if(this.hitbox.intersects(b.hitbox)) anyIntersection = true;
+//		}
+//		aufBoden = anyIntersection;
 	}
 	
 	@Override
@@ -47,10 +50,14 @@ public class Spieler extends SpielObjekt {
         if(hitbox!=null) hitbox.draw(g);
     }
 	
+
+	
 	public void jump() {
-		if(!aufBoden) return;
-		velY -= 4;
-		setMovingUp(false);
+		if(super.isAufBoden() || currentAirJumps < maxAirJumps) {
+			if(!super.isAufBoden()) currentAirJumps++;
+			velY = -4.5f;
+			setMovingUp(false);
+		}
 	}
 
 	public boolean isMovingLeft() {
@@ -80,11 +87,11 @@ public class Spieler extends SpielObjekt {
 		this.isMovingRight = isMovingRight;
 	}
 
-	public boolean isAufBoden() {
-		return aufBoden;
-	}
-
-	public void setAufBoden(boolean aufBoden) {
-		this.aufBoden = aufBoden;
-	}
+//	public boolean isAufBoden() {
+//		return aufBoden;
+//	}
+//
+//	public void setAufBoden(boolean aufBoden) {
+//		this.aufBoden = aufBoden;
+//	}
 }
