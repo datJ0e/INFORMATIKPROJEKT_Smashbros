@@ -17,13 +17,16 @@ public class SpielObjekt {
     
     float velX, velY, posX, posY, width, height;
     private float gravity;
+    private boolean aufBoden = false;
+    private Spiel spiel;
     Hitbox hitbox;
     
-    public SpielObjekt(float x, float y, float width, float height, boolean hasHitbox) {
+    public SpielObjekt(Spiel spiel, float x, float y, float width, float height, boolean hasHitbox) {
         this.posX = x;
         this.posY = y;
         this.width = width;
         this.height = height;
+        this.spiel = spiel;
 		if(hasHitbox) hitbox = new Hitbox(x, y, width, height);
     }
     
@@ -34,28 +37,55 @@ public class SpielObjekt {
      * @param time Zeit seit dem letzten update in millisekunden
      */
     public void update(long time) {
+    	update(time, isAufBoden());
+    }
+    
+    public void update(long time, boolean aufBoden) {
     	if(time<=0) return;
         //MINUS gravity, weil die koordinaten nach unten hin ja kleiner werden (sonst würde alles nach oben fallen)
-        this.velY += gravity*(time/1000f);   //1000/time damit sekunden rauskommen
-        this.posX += velX;
-        this.posY += velY;
+        if(!aufBoden) this.velY += gravity*(float)(time/1000f);   //1000/time damit sekunden rauskommen
+        moveRelative(velX, velY);
+        checkBodenCollision();
         if(hitbox!=null) {
         	hitbox.setPosX(posX);
 			hitbox.setPosY(posY);
         }
     }
     
-    public void update(long time, boolean aufBoden) {
-    	if(time<=0) return;
-        //MINUS gravity, weil die koordinaten nach unten hin ja kleiner werden (sonst würde alles nach oben fallen)
-        if(!aufBoden) this.velY += gravity*(time/1000f);   //1000/time damit sekunden rauskommen
-        this.posX += velX;
-        this.posY += velY;
-        if(hitbox!=null) {
-        	hitbox.setPosX(posX);
-			hitbox.setPosY(posY);
-        }
-    }
+	public void moveRelative(float x, float y) {
+		float movementStep = 0.2f;
+		if(x>0) {
+			for(float dx = 0f; dx <= x; dx+=movementStep) {
+				posX += movementStep;
+			}
+		}
+		if(y>0) {
+			for(float dy = 0f; dy <= y; dy+=movementStep) {
+				if(!checkBodenCollision()) posY += movementStep;
+//				 break;
+			}
+		}
+		if(x<0) {
+			for(float dx = 0f; dx >= x; dx-=movementStep) {
+				posX -= movementStep;
+			}
+		}
+		if(y<0) {
+			for(float dy = 0f; dy >= y; dy-=movementStep) {
+				posY -= movementStep;
+//				if(checkBodenCollision()) break;
+			}
+		}
+	}
+	
+	public boolean checkBodenCollision() {
+		boolean anyIntersection = false;
+		for(Boden b : spiel.getAlleBodens()) {
+			if(b.intersects(this.hitbox)) anyIntersection = true;
+		}
+		aufBoden = anyIntersection;
+		return isAufBoden();
+	}
     
     public void addVelocities(float velX, float velY) {
         this.velX += velX;
@@ -94,5 +124,9 @@ public class SpielObjekt {
     public float getVelY() {
         return this.velY;
     }
+    
+	public boolean isAufBoden() {
+		return aufBoden;
+	}
     
 }
