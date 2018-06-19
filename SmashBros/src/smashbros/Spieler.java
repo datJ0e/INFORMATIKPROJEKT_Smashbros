@@ -17,19 +17,28 @@ public class Spieler extends SpielObjekt {
 	
 	private boolean isMovingLeft, isMovingUp, isMovingDown, isMovingRight;
 	private boolean aufBoden;
+	private Spiel spiel;
 	
-	public Spieler(float x, float y, float width, float height) {
+	public Spieler(Spiel spiel, float x, float y, float width, float height) {
 		super(x, y, width, height, true);
-		super.setGravity(1.5f);
+		super.setGravity(5f);
+		this.spiel = spiel;
 	}
 	
 	@Override 
 	public void update(long time) {
-		super.update(time);
-		if(isMovingUp()) jump();
-		if(isMovingLeft()) posX -= 1;
-		if(isMovingRight()) posX += 1;
-//		if(isMovingDown) 
+		super.update(time, aufBoden);
+			if(isMovingUp()) jump();
+			if(isMovingLeft()) posX -= 1;
+			if(isMovingRight()) posX += 1;
+//			if(isMovingDown)
+		
+		if(aufBoden && velY>0) velY = 0;
+		boolean anyIntersection = false;
+		for(Boden b : spiel.getAlleBodens()) {
+			if(this.hitbox.intersects(b.hitbox)) anyIntersection = true;
+		}
+		aufBoden = anyIntersection;
 	}
 	
 	@Override
@@ -39,6 +48,7 @@ public class Spieler extends SpielObjekt {
     }
 	
 	public void jump() {
+		if(!aufBoden) return;
 		velY -= 4;
 		setMovingUp(false);
 	}
@@ -68,5 +78,13 @@ public class Spieler extends SpielObjekt {
 	public void setMovingRight(boolean isMovingRight) {
 		System.out.println("Spieler is moving right: " + isMovingRight);
 		this.isMovingRight = isMovingRight;
+	}
+
+	public boolean isAufBoden() {
+		return aufBoden;
+	}
+
+	public void setAufBoden(boolean aufBoden) {
+		this.aufBoden = aufBoden;
 	}
 }
