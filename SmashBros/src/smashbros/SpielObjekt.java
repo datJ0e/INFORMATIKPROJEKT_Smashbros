@@ -35,8 +35,20 @@ public class SpielObjekt {
      */
     public void update(long time) {
     	if(time<=0) return;
-        //MINUS gravity, weil die koordinaten nach unten hin ja kleiner werden (sonst wÃƒÂ¼rde alles nach oben fallen)
-        this.velY -= gravity*(1000/time);   //1000/time damit sekunden rauskommen
+        //MINUS gravity, weil die koordinaten nach unten hin ja kleiner werden (sonst würde alles nach oben fallen)
+        this.velY += gravity*(time/1000f);   //1000/time damit sekunden rauskommen
+        this.posX += velX;
+        this.posY += velY;
+        if(hitbox!=null) {
+        	hitbox.setPosX(posX);
+			hitbox.setPosY(posY);
+        }
+    }
+    
+    public void update(long time, boolean aufBoden) {
+    	if(time<=0) return;
+        //MINUS gravity, weil die koordinaten nach unten hin ja kleiner werden (sonst würde alles nach oben fallen)
+        if(!aufBoden) this.velY += gravity*(time/1000f);   //1000/time damit sekunden rauskommen
         this.posX += velX;
         this.posY += velY;
         if(hitbox!=null) {
@@ -56,6 +68,9 @@ public class SpielObjekt {
     }
     
     
+    public boolean intersects(Hitbox hb) {
+    	return this.hitbox.intersects(hb);
+    }
     
     /*
     * Getter und Setter
