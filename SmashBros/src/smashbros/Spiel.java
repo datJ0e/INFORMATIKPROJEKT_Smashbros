@@ -7,6 +7,7 @@
 package smashbros;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -18,15 +19,15 @@ public class Spiel {
 	
 	private Spieler spieler1;
 	private Spieler spieler2;
-	private Boden boden;
+	private ArrayList<Boden> bodense = new ArrayList<Boden>();
 	private Spiel instance;
 	private boolean running;
 	private InputController ic;
 	
 	public Spiel(JFrame frame) {
-		spieler1 = new Spieler(0, 0, 60, 100);   //spieler bild ist ca 50 hoch & 30 breit
-		spieler2 = new Spieler(300, 0, 60, 100);
-		boden = new Boden(this, 50, 300, 400);
+		spieler1 = new Spieler(this, 0, 0, 60, 100);   //spieler bild ist ca 50 hoch & 30 breit
+		spieler2 = new Spieler(this, 300, 0, 60, 100);
+		bodense.add(new Boden(this, 50, 300, 400));
 		instance = this;
 		running = true;
 		ic = new InputController(frame);
@@ -49,6 +50,7 @@ public class Spiel {
 	public void update(long time) {
 		spieler1.update(time);
 		spieler2.update(time);
+		for(Boden b : bodense) b.update(time);
 	}
 	
 	/**
@@ -58,7 +60,7 @@ public class Spiel {
 	public void draw(Graphics g) {
 		spieler1.draw(g);
 		spieler2.draw(g);
-		boden.draw(g);
+		for(Boden b : bodense) b.draw(g);
 	}
 	
 	/**
@@ -78,7 +80,9 @@ public class Spiel {
 	
 	
 	
-	
+	public ArrayList<Boden> getAlleBodens() {
+		return bodense;
+	}
 	
 	public Spieler[] getSpieler() {
 		Spieler[] s = new Spieler[2];
