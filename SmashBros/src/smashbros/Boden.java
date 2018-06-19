@@ -9,8 +9,9 @@ public class Boden extends SpielObjekt {
 	
 	
 	public Boden(Spiel spiel, float x, float y, float width) {
-		super(x, y, width, 20, true);
+		super(spiel, x, y, width, 20, true);
 		this.spiel = spiel;
+		super.hitbox.setIsBoden(true);
 	}
 	
 	@Override
