@@ -24,10 +24,12 @@ public class Spiel {
 	private boolean running;
 	private InputController ic;
 	
-	public Spiel(JFrame frame) {
+	public Spiel(JFrame frame) {   //screen breite: 1600, höhe: 900
 		spieler1 = new Spieler(this, 0, 0, 60, 100);   //spieler bild ist ca 50 hoch & 30 breit
 		spieler2 = new Spieler(this, 300, 0, 60, 100);
+		bodense.add(new Boden(this, 600, 800, 400));
 		bodense.add(new Boden(this, 50, 300, 400));
+		bodense.add(new Boden(this, 900, 500, 400));
 		instance = this;
 		running = true;
 		ic = new InputController(frame);
