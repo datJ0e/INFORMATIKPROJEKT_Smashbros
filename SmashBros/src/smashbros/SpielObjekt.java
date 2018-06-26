@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package smashbros;
+package smashbros.gameplay;
 
 import java.awt.Graphics;
 
@@ -26,7 +26,7 @@ public class SpielObjekt {
         this.posY = y;
         this.width = width;
         this.height = height;
-        this.spiel = spiel;
+        this.setSpiel(spiel);
 		if(hasHitbox) hitbox = new Hitbox(x, y, width, height);
     }
     
@@ -80,7 +80,7 @@ public class SpielObjekt {
 	
 	public boolean checkBodenCollision() {
 		boolean anyIntersection = false;
-		for(Boden b : spiel.getAlleBodens()) {
+		for(Boden b : getSpiel().getAlleBodens()) {
 			if(b.intersectsWithMe(this.hitbox)) anyIntersection = true;
 		}
 		aufBoden = anyIntersection;
@@ -113,8 +113,18 @@ public class SpielObjekt {
         return this.posX;
     }
     
+    public void setPosX(float posX) {
+    	this.posX = posX;
+    	this.hitbox.posX = posX;
+    }
+    
     public float getPosY() {
         return this.posY;
+    }
+    
+    public void setPosY(float posY) {
+    	this.posY = posY;
+    	this.hitbox.posY = posY;
     }
     
     public float getVelX() {
@@ -131,6 +141,18 @@ public class SpielObjekt {
 	
 	public Hitbox getHitbox() {
 		return hitbox;
+	}
+
+
+
+	public Spiel getSpiel() {
+		return spiel;
+	}
+
+
+
+	public void setSpiel(Spiel spiel) {
+		this.spiel = spiel;
 	}
     
 }
