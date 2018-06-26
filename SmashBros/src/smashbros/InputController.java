@@ -1,4 +1,4 @@
-package smashbros;
+package smashbros.gameplay;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -20,31 +20,35 @@ public class InputController {
 		this.frame = frame;
 	}
 	
-	public void newControll(Spieler spieler, int leftKey, int upKey, int downKey, int rightKey) {
+	public void newControll(Spieler spieler, int leftKey, int upKey, int downKey, int rightKey, int attackKey) {
 		frame.addKeyListener(new KeyListener() {
 			
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				System.out.println("typed key code: " + (int)e.getKeyChar());
+				
 			}
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				int keyCode = (int)e.getKeyChar();
+				int keyCode = e.getKeyCode();
 				if(keyCode == leftKey) spieler.setMovingLeft(false);
-				if(keyCode == upKey) spieler.setMovingUp(false);
-//				if(keyCode == downKey) spieler.setMovingLeft(true);
-				if(keyCode == rightKey) spieler.setMovingRight(false);
+				else if(keyCode == upKey) spieler.setMovingUp(false);
+//				else if(keyCode == downKey) spieler.setMovingLeft(true);
+				else if(keyCode == rightKey) spieler.setMovingRight(false);
+				System.out.println("released key code: " + (int)e.getKeyChar() + "(tricky).. real: " + e.getKeyCode());
 			}
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
-				int keyCode = (int)e.getKeyChar();
+				int keyCode = e.getKeyCode();
 				if(keyCode == leftKey) spieler.setMovingLeft(true);
-				if(keyCode == upKey) spieler.setMovingUp(true);
-//				if(keyCode == downKey) spieler.setMovingLeft(true);
-				if(keyCode == rightKey) spieler.setMovingRight(true);
+				else if(keyCode == upKey) spieler.setMovingUp(true);
+//				else if(keyCode == downKey) spieler.setMovingLeft(true);
+				else if(keyCode == rightKey) spieler.setMovingRight(true);
+				else if(keyCode == attackKey) spieler.attack();
+				
+				System.out.println("pressed key code: " + (int)e.getKeyChar() + "(tricky).. real: " + e.getKeyCode());
 			}
 		});
 	}
