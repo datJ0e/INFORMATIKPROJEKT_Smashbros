@@ -1,4 +1,4 @@
-package smashbros;
+package smashbros.gameplay;
 
 import java.awt.Color;
 import java.awt.Graphics;
