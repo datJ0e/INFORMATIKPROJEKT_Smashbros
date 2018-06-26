@@ -12,7 +12,19 @@ package smashbros;
  */
 public class ScreenSwitch {
 
-    public void switchTo (Screen s) {
-    
+	public Screen currentScreen;
+    public void switchAndDelete (Screen s1, Screen s2) {
+    	s1.setVisible(false);
+    	s2.setVisible(true);
+    	s1.deleteFrame();
+    	s1 = null;
+    	currentScreen = s2;
     }
+    
+    public void switchAndInvisible(Screen s1, Screen s2) {
+    	s1.setVisible(false);
+    	s2.setVisible(true);
+    	currentScreen = s2;
+    }
+    
 }
