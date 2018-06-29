@@ -7,6 +7,8 @@
 package smashbros.gameplay;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -57,8 +59,8 @@ public class Spiel {
 	public void update(long time) {
 		spieler1.update(time);
 		spieler2.update(time);
-		if(spieler1.posY>fenster.getHeight()) spieler1.setPosY(10);
-		if(spieler2.posY>fenster.getHeight()) spieler2.setPosY(10);
+		if(spieler1.posY>fenster.getHeight()) spieler1.die();
+		if(spieler2.posY>fenster.getHeight()) spieler2.die();
 		for(Boden b : bodense) b.update(time);
 		
 		//iterator wegen concurrency gefahr
@@ -81,8 +83,17 @@ public class Spiel {
 		spieler1.draw(g);
 		g.setColor(Color.RED);
 		spieler2.draw(g);
+		g.setColor(Color.RED);
+		drawZentriertenText(g, (spieler1.getDeaths() + " - " + spieler2.getDeaths()), new Font("Century Gothic", Font.BOLD, 48));
 		for(Boden b : bodense) b.draw(g);
 		for(Attack a : getAttacks()) a.draw(g);
+	}
+	public void drawZentriertenText(Graphics g, String text, Font font) {
+	    FontMetrics metrics = g.getFontMetrics(font);
+	    int x = (int)(fenster.getWidth()/2f - (float)((float)metrics.stringWidth(text) / 2f));
+	    int y = metrics.getHeight() + 2;
+	    g.setFont(font);
+	    g.drawString(text, x, y);
 	}
 	
 	/**
