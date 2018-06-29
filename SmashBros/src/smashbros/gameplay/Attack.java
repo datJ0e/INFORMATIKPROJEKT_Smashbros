@@ -30,8 +30,9 @@ public class Attack extends SpielObjekt {
 	
 	public void hit(Spieler spieler) {
 		spieler.addDamage(7);
-		float punchVel = (float) Math.sqrt((spieler.getDamageTaken())*Math.tanh(spieler.getDamageTaken()*0.1)*direction);   //*direction, damit bei direction_left punchVel nach links geht
+		float punchVel = (float) (Math.sqrt((spieler.getDamageTaken())*Math.tanh(spieler.getDamageTaken()*0.1))*direction);   //*direction, damit bei direction_left punchVel nach links geht
 		spieler.velX += punchVel;
+		System.out.println("hit: " + punchVel + ", direction: " + direction);
 	}
 	
 	
