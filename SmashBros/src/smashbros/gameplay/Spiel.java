@@ -15,6 +15,8 @@ import java.util.Iterator;
 
 import javax.swing.JFrame;
 
+import smashbros.Background;
+
 /**
  * Klasse die alle Objekte usw managet
  * @author fre.riedmann
@@ -25,23 +27,26 @@ public class Spiel {
 	private Spieler spieler2;
 	private ArrayList<Boden> bodense = new ArrayList<Boden>();
 	private ArrayList<Attack> attacks = new ArrayList<Attack>();
+	private Background bg;
 	private Spiel instance;
 	private JFrame fenster;
 	private boolean running;
 	private InputController ic;
 	
 	public Spiel(JFrame frame) {   //screen breite: 1600, höhe: 900
-		spieler1 = new Spieler(this, 0, 0, 60, 100);   //spieler bild ist ca 50 hoch & 30 breit
-		spieler2 = new Spieler(this, 300, 0, 60, 100);
-		bodense.add(new Boden(this, 600, 800, 400));
-		bodense.add(new Boden(this, 50, 300, 400));
-		bodense.add(new Boden(this, 900, 500, 400));
+		this.fenster = frame;
+		spieler1 = new Spieler(this, 0, 0, frame.getWidth()/(1600/60), frame.getHeight()/(900/100));   //spieler bild ist ca 50 hoch & 30 breit
+		spieler2 = new Spieler(this, 300, 0, frame.getWidth()/(1600/60), frame.getHeight()/(900/100));
+		bodense.add(new Boden(this, frame.getWidth()/(1600f/600f), frame.getHeight()/(900f/800f), frame.getWidth()/(1600/400)));
+		bodense.add(new Boden(this, frame.getWidth()/(1600f/50f), frame.getHeight()/(900f/300f), frame.getWidth()/(1600/400)));
+		bodense.add(new Boden(this, frame.getWidth()/(1600f/900f), frame.getHeight()/(900f/500f), frame.getWidth()/(1600/400)));
 		instance = this;
 		running = true;
 		ic = new InputController(frame);
 		ic.newControll(spieler1, 65, 87, 83, 68, 17);
 		ic.newControll(spieler2, 37, 38, 40, 39, 96);
-		this.fenster = frame;
+		bg = new Background(frame.getWidth(), frame.getHeight());
+		bg.load();
 	}
 	
 	/**
@@ -79,6 +84,8 @@ public class Spiel {
 	 * @param g Graphics Objekt mit dem alles gezeichnet wird
 	 */
 	public void draw(Graphics g) {
+		bg.paint(g);
+//		g = bg.getGraphics();
 		g.setColor(Color.BLUE);
 		spieler1.draw(g);
 		g.setColor(Color.RED);
@@ -122,6 +129,10 @@ public class Spiel {
 		s[0] = spieler1;
 		s[1] = spieler2;
 		return s;
+	}
+	
+	public JFrame getFenster() {
+		return fenster;
 	}
 
 	public ArrayList<Attack> getAttacks() {
