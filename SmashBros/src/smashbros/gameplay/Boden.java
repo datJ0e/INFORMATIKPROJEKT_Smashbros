@@ -1,16 +1,12 @@
-package smashbros;
+package smashbros.gameplay;
 
 import java.awt.Color;
 import java.awt.Graphics;
 
 public class Boden extends SpielObjekt {
 	
-	Spiel spiel;
-	
-	
 	public Boden(Spiel spiel, float x, float y, float width) {
-		super(spiel, x, y, width, 20, true);
-		this.spiel = spiel;
+		super(spiel, x, y, width, spiel.getFenster().getHeight()/(900/20), true);
 		super.hitbox.setIsBoden(true);
 	}
 	
