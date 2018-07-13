@@ -57,22 +57,26 @@ public class SpielObjekt {
 		if(x>0) {
 			for(float dx = 0f; dx <= x; dx+=movementStep) {
 				posX += movementStep;
+				hitbox.setPosX(posX);
 			}
 		}
 		if(y>0) {
 			for(float dy = 0f; dy <= y; dy+=movementStep) {
 				if(!checkBodenCollision()) posY += movementStep;
+				hitbox.setPosY(posY);
 //				 break;
 			}
 		}
 		if(x<0) {
 			for(float dx = 0f; dx >= x; dx-=movementStep) {
 				posX -= movementStep;
+				hitbox.setPosX(posX);
 			}
 		}
 		if(y<0) {
 			for(float dy = 0f; dy >= y; dy-=movementStep) {
 				posY -= movementStep;
+				hitbox.setPosY(posY);
 //				if(checkBodenCollision()) break;
 			}
 		}
