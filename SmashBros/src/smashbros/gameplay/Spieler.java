@@ -8,6 +8,8 @@ package smashbros.gameplay;
 
 import java.awt.Graphics;
 
+import smashbros.SpielerTextur;
+
 /**
  * Spieler. Wie der Name schon sagt. Extendet SpielObjekt
  * @see SpielObjekt
@@ -21,10 +23,13 @@ public class Spieler extends SpielObjekt {
 	private int damageTaken = 0;
 	private int facingDirection = 0;
 	private int deaths = 0;
+	private SpielerTextur st;
 	
-	public Spieler(Spiel spiel, float x, float y, float width, float height) {
+	public Spieler(Spiel spiel, float x, float y, float width, float height, boolean istSpielerZwei) {
 		super(spiel, x, y, width, height, true);
-		super.setGravity(5f);
+		super.setGravity(getSpiel().getFenster().getHeight()/(900/(7f)));
+		st = new SpielerTextur((int)width, (int)height, istSpielerZwei);
+		st.load();
 	}
 	
 	@Override 
@@ -34,16 +39,16 @@ public class Spieler extends SpielObjekt {
 //			float relX = 0, relY = 0;
 			if(isMovingLeft()) {   //falls nach links gedrückt wurde, nach links laufen
 				if(super.isAufBoden()) {
-					velX = -3.5f;
+					velX = getSpiel().getFenster().getWidth()/(1600/(-3.5f));
 				} else {   //falls in der Luft, nur ein bisschen entgegensteuern
 					if(velX>-2) velX -= 0.5f;
 				}
 				facingDirection = Direction.DIRECTION_LEFT;
 			} else if(isMovingRight()) {   //falls nach rechts gedrückt wurde, nach rechts laufen
 				if(super.isAufBoden()) {
-					velX = 3.5f;
+					velX = getSpiel().getFenster().getWidth()/(1600/(3.5f));
 				} else {   //falls in der Luft, nur ein bisschen entgegensteuern
-					if(velX<2) velX += 0.5f;
+					if(velX<2) velX += getSpiel().getFenster().getWidth()/(1600/(0.5f));
 				}
 				facingDirection = Direction.DIRECTION_RIGHT;
 			}
@@ -66,8 +71,12 @@ public class Spieler extends SpielObjekt {
 	
 	@Override
     public void draw(Graphics g) {
-        g.fillRect((int)posX, (int)posY, (int)width, (int)height);
-        if(hitbox!=null) hitbox.draw(g);
+//        g.fillRect((int)posX, (int)posY, (int)width, (int)height);
+        st.setWalking(isMovingLeft() || isMovingRight());
+        st.setDirection(this.facingDirection);
+        st.setPosition((int)posX, (int)posY);
+        st.paint(g);
+//        if(hitbox!=null) hitbox.draw(g);
     }
 	
 
@@ -75,7 +84,7 @@ public class Spieler extends SpielObjekt {
 	public void jump() {
 		if(super.isAufBoden() || currentAirJumps < maxAirJumps) {
 			if(!super.isAufBoden()) currentAirJumps++;
-			velY = -4.5f;
+			velY = getSpiel().getFenster().getHeight()/(900/(-4.5f));
 			setMovingUp(false);
 		}
 	}
@@ -106,6 +115,10 @@ public class Spieler extends SpielObjekt {
 	public void die() {
 		setDeaths(getDeaths() + 1);
 		this.posY = 10;
+		this.posX = getSpiel().getFenster().getWidth()/2 + this.width/2;
+		this.velX = 0;
+		this.velY = 3;
+		damageTaken = 0;
 	}
 	
 	public void setMovingLeft(boolean isMovingLeft) {
