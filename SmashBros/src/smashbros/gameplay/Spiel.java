@@ -6,160 +6,164 @@
 
 package smashbros.gameplay;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.swing.JFrame;
+
+import smashbros.Background;
 
 /**
- * Spieler. Wie der Name schon sagt. Extendet SpielObjekt
- * @see SpielObjekt
+ * Klasse die alle Objekte usw managet
  * @author fre.riedmann
  */
-public class Spieler extends SpielObjekt {
+public class Spiel {
 	
-	private boolean isMovingLeft, isMovingUp, isMovingDown, isMovingRight;
-	private int maxAirJumps = 2;   //wie oft man in der luft nochmal springen kann
-	private int currentAirJumps = 0;   //wie oft der spieler in der luft schon gepsrungen ist
-	private int damageTaken = 0;
-	private int facingDirection = 0;
-	private int deaths = 0;
+	private Spieler spieler1;
+	private Spieler spieler2;
+	private ArrayList<Boden> bodense = new ArrayList<Boden>();
+	private ArrayList<Attack> attacks = new ArrayList<Attack>();
+	private Background bg;
+	private Spiel instance;
+	private JFrame fenster;
+	private boolean running;
+	private InputController ic;
 	
-	public Spieler(Spiel spiel, float x, float y, float width, float height) {
-		super(spiel, x, y, width, height, true);
-		super.setGravity(getSpiel().getFenster().getHeight()/(900/(5f)));
+	public Spiel(JFrame frame) {   //screen breite: 1600, höhe: 900
+		this.fenster = frame;
+		spieler1 = new Spieler(this, 0, 0, frame.getWidth()/(1600/60), frame.getHeight()/(900/100), false);   //spieler bild ist ca 50 hoch & 30 breit
+		spieler2 = new Spieler(this, 300, 0, frame.getWidth()/(1600/60), frame.getHeight()/(900/100), true);
+		bodense.add(new Boden(this, frame.getWidth()*0.33f, frame.getHeight()*0.66f, frame.getWidth()*0.33f));
+		bodense.add(new Boden(this, frame.getWidth()*0.1f, frame.getHeight()*0.5f, frame.getWidth()*0.2f));
+		bodense.add(new Boden(this, frame.getWidth()*0.7f, frame.getHeight()*0.5f, frame.getWidth()*0.2f));
+		instance = this;
+		running = true;
+		ic = new InputController(frame);
+		ic.newControll(spieler1, 65, 87, 83, 68, 17);
+		ic.newControll(spieler2, 37, 38, 40, 39, 96);
+		bg = new Background(frame.getWidth(), frame.getHeight());
+		bg.load();
 	}
 	
-	@Override 
+	/**
+	 * Startet das Spiel
+	 */
+	public void start() {
+		running = true;
+		updater.start();
+	}
+	
+	/**
+	 * Updated alles für die vergangene Zeit seit dem letzten update in milisekunden
+	 * @param time zeit seit dem letzten update in millisekunden
+	 */
 	public void update(long time) {
-		super.update(time);
-			if(isMovingUp()) jump();
-//			float relX = 0, relY = 0;
-			if(isMovingLeft()) {   //falls nach links gedrückt wurde, nach links laufen
-				if(super.isAufBoden()) {
-					velX = getSpiel().getFenster().getWidth()/(1600/(-3.5f));
-				} else {   //falls in der Luft, nur ein bisschen entgegensteuern
-					if(velX>-2) velX -= 0.5f;
-				}
-				facingDirection = Direction.DIRECTION_LEFT;
-			} else if(isMovingRight()) {   //falls nach rechts gedrückt wurde, nach rechts laufen
-				if(super.isAufBoden()) {
-					velX = getSpiel().getFenster().getWidth()/(1600/(3.5f));
-				} else {   //falls in der Luft, nur ein bisschen entgegensteuern
-					if(velX<2) velX += getSpiel().getFenster().getWidth()/(1600/(0.5f));
-				}
-				facingDirection = Direction.DIRECTION_RIGHT;
-			}
-			if(super.isAufBoden()) {
-				currentAirJumps = 0;
-				if(velY>0)velY=0;
-			}
-			if(super.isAufBoden() && !isMovingLeft() && !isMovingRight()) velX = (float)(velX*0.8f);
-			if(Math.abs(velX) < 0.1) velX = 0;
-//			moveRelative(relX, relY);
-//			if(isMovingDown)
+		spieler1.update(time);
+		spieler2.update(time);
+		if(spieler1.posY>fenster.getHeight()) spieler1.die();
+		if(spieler2.posY>fenster.getHeight()) spieler2.die();
+		for(Boden b : bodense) b.update(time);
 		
-//		if(aufBoden && velY>0) velY = 0;
-//		boolean anyIntersection = false;
-//		for(Boden b : spiel.getAlleBodens()) {
-//			if(this.hitbox.intersects(b.hitbox)) anyIntersection = true;
-//		}
-//		aufBoden = anyIntersection;
+		//iterator wegen concurrency gefahr
+		Iterator<Attack> i = attacks.iterator();
+		while(i.hasNext()) {
+			Attack a = i.next();
+			a.update(time);
+			if(spieler1 != a.getCaster() && a.intersects(spieler1.hitbox))a.hit(spieler1);
+			if(spieler2 != a.getCaster() && a.intersects(spieler2.hitbox))a.hit(spieler2);
+			if(a.isOld) i.remove();
+		}
+		checkGameOver();
 	}
 	
-	@Override
-    public void draw(Graphics g) {
-        g.fillRect((int)posX, (int)posY, (int)width, (int)height);
-        if(hitbox!=null) hitbox.draw(g);
-    }
-	
-
-	
-	public void jump() {
-		if(super.isAufBoden() || currentAirJumps < maxAirJumps) {
-			if(!super.isAufBoden()) currentAirJumps++;
-			velY = getSpiel().getFenster().getHeight()/(900/(-4.5f));
-			setMovingUp(false);
+	public void checkGameOver() {
+		if(spieler1.getDeaths() >= 5 || spieler2.getDeaths() >= 5) {
+			// game over
 		}
 	}
-
-	public boolean isMovingLeft() {
-		return isMovingLeft;
+	
+	/**
+	 * Zeichnet alles was sich bewegt oder verändert
+	 * @param g
+	 */
+	public void drawMovingStuff(Graphics g) {
+		g.setColor(Color.BLUE);
+		spieler1.draw(g);
+		g.setColor(Color.RED);
+		spieler2.draw(g);
+		g.setColor(Color.RED);
+		drawZentriertenText(g, (spieler1.getDeaths() + " - " + spieler2.getDeaths()), new Font("Century Gothic", Font.BOLD, 48));
+		for(Attack a : getAttacks()) a.draw(g);
 	}
 	
-	public void attack() {
-		switch(facingDirection) {
-			case Direction.DIRECTION_LEFT:
-				attackLeft();
-				break;
-			case Direction.DIRECTION_RIGHT:
-				attackRight();
-				break;
+	/**
+	 * Zeichnet alles was sich nicht bewegt, also den hintergrund und die böden
+	 * @param g
+	 */
+	public void drawStaticStuff(Graphics g) {
+		bg.paint(g);
+		for(Boden b : bodense) b.draw(g);
+	}
+	
+	/**
+	 * Zeichnet alle Objekte des Spiels
+	 * @param g Graphics Objekt mit dem alles gezeichnet wird
+	 */
+	public void draw(Graphics g) {
+		drawStaticStuff(g);
+		drawMovingStuff(g);
+	}
+	
+	public void drawZentriertenText(Graphics g, String text, Font font) {
+	    FontMetrics metrics = g.getFontMetrics(font);
+	    int x = (int)(fenster.getWidth()/2f - (float)((float)metrics.stringWidth(text) / 2f));
+	    int y = metrics.getHeight() + 2;
+	    g.setFont(font);
+	    g.drawString(text, x, y);
+	}
+	
+	/**
+	 * Runnable die alles genau 60 mal pro Sekunde berechnet
+	 */
+	Thread updater = new Thread() {
+		@Override
+		public void run() {
+			long last = System.currentTimeMillis()-16;
+			while(running) {
+				instance.update(System.currentTimeMillis() - last);
+				last = System.currentTimeMillis();
+				try {Thread.sleep(16);} catch (InterruptedException e) {e.printStackTrace();}
+			}
 		}
-	}
-
-	public void attackLeft() {
-		super.getSpiel().getAttacks().add(Attack.createDefaultAttack(super.getSpiel(), this, Direction.DIRECTION_LEFT));
+	};
+	
+	
+	
+	public ArrayList<Boden> getAlleBodens() {
+		return bodense;
 	}
 	
-	public void attackRight() {
-		super.getSpiel().getAttacks().add(Attack.createDefaultAttack(super.getSpiel(), this, Direction.DIRECTION_RIGHT));
+	public Spieler[] getSpieler() {
+		Spieler[] s = new Spieler[2];
+		s[0] = spieler1;
+		s[1] = spieler2;
+		return s;
 	}
 	
-	public void die() {
-		setDeaths(getDeaths() + 1);
-		this.posY = 10;
-		this.posX = getSpiel().getFenster().getWidth()/2 + this.width/2;
-		this.velX = 0;
-		this.velY = 3;
-		damageTaken = 0;
-	}
-	
-	public void setMovingLeft(boolean isMovingLeft) {
-		System.out.println("Spieler is moving left: " + isMovingLeft);
-		this.isMovingLeft = isMovingLeft;
+	public JFrame getFenster() {
+		return fenster;
 	}
 
-	public boolean isMovingUp() {
-		return isMovingUp;
+	public ArrayList<Attack> getAttacks() {
+		return attacks;
 	}
 
-	public void setMovingUp(boolean isMovingUp) {
-		System.out.println("Spieler is moving up: " + isMovingUp);
-		this.isMovingUp = isMovingUp;
+	public void setAttacks(ArrayList<Attack> attacks) {
+		this.attacks = attacks;
 	}
-
-	public boolean isMovingRight() {
-		return isMovingRight;
-	}
-
-	public void setMovingRight(boolean isMovingRight) {
-		System.out.println("Spieler is moving right: " + isMovingRight);
-		this.isMovingRight = isMovingRight;
-	}
-	
-	public void addDamage(int damage) {
-		setDamageTaken(getDamageTaken() + damage);
-	}
-
-	public int getDamageTaken() {
-		return damageTaken;
-	}
-
-	public void setDamageTaken(int damageTaken) {
-		this.damageTaken = damageTaken;
-	}
-
-	public int getDeaths() {
-		return deaths;
-	}
-
-	public void setDeaths(int deaths) {
-		this.deaths = deaths;
-	}
-
-//	public boolean isAufBoden() {
-//		return aufBoden;
-//	}
-//
-//	public void setAufBoden(boolean aufBoden) {
-//		this.aufBoden = aufBoden;
-//	}
+    
 }
