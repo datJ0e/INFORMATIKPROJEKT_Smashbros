@@ -1,3 +1,5 @@
+package smashbros;
+
 import java.sql.*;
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
@@ -17,7 +19,7 @@ public class DBHelper {
 		  //neuesSpielAnlegen("Er","Ich","1:299",100,10,aktuellesDatum());
 		  spielergebnisseAusgeben("Ich");
 	}
-	//Gibt das aktuelle Datum zurück
+	//Gibt das aktuelle Datum zurÃ¼ck
 	static String aktuellesDatum() {
 		GregorianCalendar now = new GregorianCalendar(); 
 		DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
@@ -143,7 +145,7 @@ public class DBHelper {
 	//ein neuer Spieler wird in die Datenbak eingetragen
 	public static boolean neuenBenutzerAnlegen(String name,String pw) {
 		try {
-			if(prüfeNamen(name)) {
+			if(prÃ¼feNamen(name)) {
 				c = DriverManager.getConnection("jdbc:sqlite:test.db");
 				String query="INSERT Into spielername_passwort_highscore(spielername,Passwort,pershighscore,highscoreSpielId) "
 						+ "values(?,?,?,?)";
@@ -158,7 +160,7 @@ public class DBHelper {
 				System.out.println("Spieler erfolgreich angelegt");
 				return true;
 			}else {
-				System.out.println("Spieler nicht angelegt ! Bitte Namen ändern");
+				System.out.println("Spieler nicht angelegt ! Bitte Namen Ã¤ndern");
 			}
 			return false;
 		} catch (SQLException e) {
@@ -167,8 +169,8 @@ public class DBHelper {
 		}
 		return false;
 	}
-	//prüft obder Name zulässig ist
-	private static boolean prüfeNamen(String name) {
+	//prÃ¼ft obder Name zulÃ¤ssig ist
+	private static boolean prÃ¼feNamen(String name) {
 		try {
 			c = DriverManager.getConnection("jdbc:sqlite:test.db");
 			System.out.println("Opened database successfully");
@@ -214,8 +216,8 @@ public class DBHelper {
 		 System.out.println("Opened database successfully");
 	
 	}
-	//Anmeldedaten werden überprüft
-	public static boolean prüfeAnmeldedaten(String name,String pw) {
+	//Anmeldedaten werden Ã¼berprÃ¼ft
+	public static boolean prÃ¼feAnmeldedaten(String name,String pw) {
 		try {
 			c = DriverManager.getConnection("jdbc:sqlite:test.db");
 			System.out.println("Opened database successfully");
