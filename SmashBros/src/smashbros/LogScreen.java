@@ -24,9 +24,13 @@ public class LogScreen {
 	private JPasswordField passwordField;
 	private JTextField benutzernameField;
 	JFrame frame;
+	public int spieler=1;
+	public static String Spieler1;
+	public static String Spieler2;
 	
-	public LogScreen() {
+	public LogScreen(int spieler) {
 		JFrame f = new JFrame();
+		this.spieler=spieler;
 		frame = f;
 		f.setSize(450, 300);
 		f.getContentPane().setLayout(null);
@@ -46,7 +50,7 @@ public class LogScreen {
 		JTextPane txtpnBitteLoggenSie = new JTextPane();
 		txtpnBitteLoggenSie.setEditable(false);
 		txtpnBitteLoggenSie.setText("Bitte loggen Sie sich ein.");
-		txtpnBitteLoggenSie.setBounds(144, 55, 149, 20);
+		txtpnBitteLoggenSie.setBounds(130, 55, 220, 20);
 		f.getContentPane().add(txtpnBitteLoggenSie);
 		
 		benutzernameField = new JTextField();
@@ -106,20 +110,34 @@ public class LogScreen {
 	}
 	
 	public static void main (String[] args) {
-		new LogScreen();
+		new LogScreen(1);
 		
 	}
 	
 	public void anmelden(String passwort, String benutzername, JTextPane ausgabe) {
 		if(passwort != null && benutzername != null) {
 			if(DBHelper.prüfeAnmeldedaten(benutzername, passwort)) {
-				ausgabe.setText("Willkommen " + benutzername + "!");
+				if(spieler==1) {
+					ausgabe.setText("Willkommen " + benutzername + " ! Nun Spieler 2 !");
+					Spieler1=benutzername;
+					spieler=2;
+				}
+				else {
+					if(!benutzername.equalsIgnoreCase(Spieler1)) {
+						ausgabe.setText("Willkommen " + benutzername + " ! Lade Hauptmenü !");
+						Spieler2=benutzername;
+						spieler=1;
+						Frameweg();
+						new MainMenue(Spieler1, Spieler2);
+					}else {
+						ausgabe.setText("Dieser Spieler ist schon angemeldet!");
+					}
+				}
 			} else {
 				ausgabe.setText("Falscher Benutzername oder falsches Passwort");
 			}
 		}
 	}
-	
 	public void Frameweg() {
 		frame.dispose();
 	}
