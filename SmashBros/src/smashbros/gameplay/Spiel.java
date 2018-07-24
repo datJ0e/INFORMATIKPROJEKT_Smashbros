@@ -96,7 +96,11 @@ public class Spiel {
 		g.setColor(Color.RED);
 		spieler2.draw(g);
 		g.setColor(Color.RED);
-		drawZentriertenText(g, (spieler1.getDeaths() + " - " + spieler2.getDeaths()), new Font("Century Gothic", Font.BOLD, 48));
+		drawZentriertenText(g, (spieler1.getDeaths() + " - " + spieler2.getDeaths()), new Font("Century Gothic", Font.BOLD, 48), fenster.getWidth()/2, 2);
+//		drawZentriertenText(g, ("Dmg: " + spieler1.getDamageTaken() + " - " + spieler2.getDamageTaken()), new Font("Century Gothic", Font.BOLD, 24), fenster.getWidth()/2, heightLineOne + 5);
+		Font damageFont = new Font("Century Gothic", Font.BOLD, 12);
+		drawZentriertenText(g, ("" + spieler1.getDamageTaken()), damageFont, (int)(spieler1.getPosX()+spieler1.getWidth()/2f), (int)(spieler1.getPosY() - 5 - g.getFontMetrics(damageFont).getHeight()));
+		drawZentriertenText(g, ("" + spieler2.getDamageTaken()), damageFont, (int)(spieler2.getPosX()+spieler2.getWidth()/2f), (int)(spieler2.getPosY() - 5 - g.getFontMetrics(damageFont).getHeight()));
 		for(Attack a : getAttacks()) a.draw(g);
 	}
 	
@@ -118,12 +122,21 @@ public class Spiel {
 		drawMovingStuff(g);
 	}
 	
-	public void drawZentriertenText(Graphics g, String text, Font font) {
+	/**
+	 * Zeichnet den gegebenen Text zentriert auf der höhe y
+	 * @param g Graphics Objekt zum Zeichnen
+	 * @param text Text der gezeichnet wird
+	 * @param font Schriftart
+	 * @param posY höhe
+	 * @return wie hoch der Text war
+	 */
+	public int drawZentriertenText(Graphics g, String text, Font font, int posX, int posY) {
 	    FontMetrics metrics = g.getFontMetrics(font);
-	    int x = (int)(fenster.getWidth()/2f - (float)((float)metrics.stringWidth(text) / 2f));
-	    int y = metrics.getHeight() + 2;
+	    int x = (int)(posX - (float)((float)metrics.stringWidth(text) / 2f));
+	    int y = metrics.getHeight() + posY;
 	    g.setFont(font);
 	    g.drawString(text, x, y);
+	    return y;
 	}
 	
 	/**
