@@ -134,6 +134,10 @@ public class SpielObjekt {
     public float getVelX() {
         return this.velX;
     }
+	
+	public float getWidth() {
+		return width;
+	}
     
     public float getVelY() {
         return this.velY;
