@@ -1,3 +1,5 @@
+package smashbros;
+
 import java.util.ArrayList;
 
 public class Spielergebnisse {
@@ -21,8 +23,15 @@ public class Spielergebnisse {
 	public static String getS2() {
 		return s2;
 	}
-	public static String getErgebnis() {
-		return ergebnis;
+	public static String getErgebnis1() {
+		String[] s=ergebnis.split(":");
+		String r1=s[0];
+		return r1;
+	}
+	public static String getErgebnis2() {
+		String[] s=ergebnis.split(":");
+		String r2=s[1];
+		return r2;
 	}
 	public static int getLsc1() {
 		return lsc1;
